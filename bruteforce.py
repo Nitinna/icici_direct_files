@@ -10,9 +10,9 @@ import pdb
 # get data via icici api
 df = ic.get_day_data(
     interval="30minute",
-    start_date="2024-11-29T07:00:00.000Z",
-    end_date="2024-12-02T15:00:00.000Z",
-    stock_code="STABAN",
+    start_date="2024-01-01T07:00:00.000Z",
+    end_date="2024-12-03T15:00:00.000Z",
+    stock_code="LARTOU",
     exchange_code="NSE",
     product_type="cash"
 )
@@ -140,36 +140,17 @@ for period, multiplier in combinations:
     # Calculate performance metrics (for example, total profit)
     total_pnl = trade_df['pnl'].sum() if not trade_df.empty else 0
     print(f"Total Profit for period={period}, multiplier={multiplier}: {total_pnl}")
-
-    # if period == 18:
-        # pdb.set_trace()
-    # Define the file path where you want to save the data
-    csv_file_path = "trade_results.csv"
-
-    # Create a new row to append
-    new_row = {
-        'period': period,
-        'multiplier': multiplier,
-        'pnl': total_pnl
-    }
-
-    # Check if the CSV file already exists to avoid overwriting headers
+    filename = f"period_{period}_multiplier_{multiplier}.csv"
+    # pdb.set_trace()
     try:
-        # Try reading the CSV file to check if it exists
-        trade_results_df = pd.read_csv(csv_file_path)
-        # If file exists, append the new row without headers
-        new_row_df = pd.DataFrame([new_row])
-        new_row_df.to_csv(csv_file_path, mode='a', header=False, index=False)
-    except FileNotFoundError:
-        # If file doesn't exist, create a new file with headers
-        trade_results_df = pd.DataFrame([new_row])
-        trade_results_df.to_csv(csv_file_path, mode='w', header=True, index=False)
-
-    # print(f"Updated CSV file with total PnL: {total_pnl}")
-    
+        trade_df.to_csv('brute_force_data/'+ filename, index=False)
+    except:
+        print('error in' , period, multiplier)
+   
     # Compare with the best performance so far
     if best_performance is None or total_pnl > best_performance:
         best_performance = total_pnl
         best_params = (period, multiplier)
 
 print(f"Best performing parameters: period={best_params[0]}, multiplier={best_params[1]} with total profit: {best_performance}")
+pdb.set_trace()
